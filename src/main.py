@@ -1,11 +1,9 @@
 from fastapi import FastAPI
-
-from modules import person
+from .modules import api
 
 app = FastAPI()
-app.person_container = person.containers.Container()
 
-app.include_router(person.api.router)
+app.include_router(api.router)
 
 
 @app.get('/')
