@@ -1,32 +1,49 @@
 import uuid
 
-from fastapi import APIRouter, HTTPException
+from dependency_injector.wiring import Provide, inject
+from fastapi import APIRouter, HTTPException, Depends
 
-from modules.person.schemas.base_schemas import Person, PersonIn
-from modules.person.service import PersonService
+from .schemas.base_schemas import Person, PersonIn
+from .engines.engine import PersonEngine
+from . import Container
 
 router = APIRouter(prefix='/persons', tags=['persons'])
 
 
 @router.get('/')
-async def get_persons() -> list[Person]:
-    return await PersonService.get_all()
+@inject
+async def get_persons(
+        engine: PersonEngine = Depends(Provide[Container.engine])
+) -> list[Person]:
+    return await engine.get_all()
 
 
 @router.post('/')
-async def create_person(person: PersonIn) -> uuid.UUID:
+@inject
+async def create_person(
+        person: PersonIn,
+        engine: PersonEngine = Depends(Provide[Container.engine])
+) -> uuid.UUID:
     person = Person(**person.model_dump())
-    return await PersonService.create(person)
+    return await engine.create(person)
 
 
 @router.get('/{id_}/')
-async def get_person(id_: uuid.UUID) -> Person:
-    result = await PersonService.get(id_)
+@inject
+async def get_person(
+        id_: uuid.UUID,
+        engine: PersonEngine = Depends(Provide[Container.engine])
+) -> Person:
+    result = await engine.get(id_)
     if not result:
         raise HTTPException(status_code=404, detail='Not Found')
     return result
 
 
-@router.delete('/{id_}/')
-async def delete_person(id_: uuid.UUID) -> None:
-    await PersonService.delete(id_)
+@router.delete('/{id_}/', status_code=204)
+@inject
+async def delete_person(
+        id_: uuid.UUID,
+        engine: PersonEngine = Depends(Provide[Container.engine])
+) -> None:
+    await engine.delete(id_)
