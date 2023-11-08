@@ -47,3 +47,6 @@ async def delete_person(
         engine: PersonEngine = Depends(Provide[Container.engine])
 ) -> None:
     await engine.delete(id_)
+
+
+Container()
