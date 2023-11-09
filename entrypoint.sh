@@ -5,4 +5,4 @@ alembic upgrade head
 
 
 echo "Running uvicorn"
-uvicorn main:app --host 0.0.0.0 --port 5000
+uvicorn src.main:app --host 0.0.0.0 --port 5000

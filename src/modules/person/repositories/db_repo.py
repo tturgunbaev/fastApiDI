@@ -6,7 +6,7 @@ from sqlalchemy import select, delete
 
 from ..schemas.base_schemas import Person
 from ..db.models import PersonDB
-from .db_abc import BaseDBRepo
+from .db_repo_abc import BaseDBRepo
 
 
 class PersonDBRepo(BaseDBRepo):
