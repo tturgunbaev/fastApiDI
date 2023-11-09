@@ -3,9 +3,9 @@ ENV PYTHONUNBUFFERED 1
 
 RUN apt-get update && apt-get install -y libpq-dev gcc netcat-openbsd
 
-RUN mkdir /app -p && mkdir /app/static -p
+RUN mkdir /app -p
 WORKDIR /app
-COPY requirements.txt /app
+COPY src/requirements.txt /app
 RUN pip install -r requirements.txt
 
 COPY .. /app/
